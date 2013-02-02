@@ -1,0 +1,37 @@
+root{
+    -webkit-transition-property: root;
+    -webkit-animation-duration: 0.4s;
+}
+body {
+   
+  
+}
+
+a {
+    
+}
+
+#page {
+    padding-right: 1%;
+    padding-left: 1%;
+    padding-bottom: 1%;
+}
+p , li{
+    font-family: sans-serif;
+   
+}
+h1{
+    text-shadow:0 1px 1px rgba(0, 0, 0, 0.5);
+}
+
+td.order {
+    width: 80px;
+    height:  50px;
+}
+#orderHead {
+    background-color: #688817;
+}
+
+#orderContent {
+    border-right-width: thick;
+}

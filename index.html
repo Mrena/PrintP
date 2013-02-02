@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>PrintP</title>
+    <link rel="stylesheet" href="css/jquery.ui.all.css">
+    <link rel="stylesheet" href="css/jquery.ui.button.min.css">
+    <link rel="stylesheet" href="css/mainStyle.css">
+    <link rel="stylesheet" href="css/jquery-ui.css">
+
+    <style type="text/css">
+        .ui-menu { width: 150px; }
+        
+    </style>
+
+   
+    
+    
+<script type="text/javascript">
+</script>
+</head>
+<body>
+    <div id="exit"></div>
+    <header>
+<h1 class="ui-state-highlight">PrintP</h1>
+
+<h4>Send us your image for printing. We will deliver you a high quality print-out right to your door step. Payment on delivery.</h4>
+    
+<ul id="menu">
+        <li>
+            Menu
+            <ul>
+    <li class="ui-icon-home"><a href="#" id="home"> Home</a></li><li><a href="#" id="orderhistory.html">Order History</a></li><li><a href="#" id="contact.html">Comment</a></li> <li><a href="#" id="about.html"> About</a></li>
+   <li><a href="#" id="close">Close</a></li>
+            </ul>
+        </li>
+        </ul>
+    </header>
+<div id="page" class="ui-widget-content ui-corner-all">
+    <div id="err" class="err"> </div>
+    
+    <br />
+<form id="mainForm" enctype="multipart/form-data" action="php/handle_img.php" method="post">
+<input type="hidden" name="MAX_FILE_SIZE" value="5000000" />
+<input type="hidden" name="imgNum" id="imgNum" value="1" />
+ <input type="hidden" id="priceIn" name="priceIn" value="0" />
+    <input type="hidden" id="userId" name="userId" value="null" />
+    <div style="color: teal">Price: <span id="price">R0.00</span></div>
+<table>
+
+
+<tr><td><label for="image">Image:</label></td><td><span id="img"> <input type="file" name="image" id="image" /></span></td><td><!--<a id="add" onclick="addUp()" href="#">another</a><br />--></td></tr>
+<tr><td><label for="printSize">Print Size:</label><br /></td>
+<td><select  name="printSize" id="printSize" onchange="quantitySizeChanged()">
+<option>Select print size</option>
+</select></td>
+</tr>
+<tr><td><label for="quantity">Number of images:</label></td><td>
+<select name="quantity" id="quantity" onchange="quantitySizeChanged()">
+<option>Select quantity</option>
+</select>
+<a id="next" href="#" onclick="nextLinkClicked()">Next</a>
+</td></tr>
+
+<tr><td><h4>Your details:</h4></td></tr>
+
+<tr><td><label for="name">Name:</label><br /></td><td><input type="text" name="name" id="name" /><br /></td></tr>
+<tr><td><label for="number">Phone Number:</label><br /></td><td><input type="tel" name="number" id="number" /></td></tr>
+<tr><td><label for="location">Location:</label><br /></td><td><select name="location" id="location" onchange="locationChanged()">
+																<option>Select location</option>
+																</select></td><td><span id="specific"></span></td></td></tr>
+<tr><td><label for="address">Home Address:</label><br /></td><td><textarea name="address" id="address"></textarea></td></tr>
+<tr><td><label for="directions">Special directions:</label><br /></td><td><textarea name="directions" id="directions"></textarea></td></tr>
+<tr><td><input type="button" id="save" name="save" title="Saves your current details so you won't have to re-type it later." value="Save" class="ui-button" onclick="saveDetails()"  /></td><td><input type="submit" id="submit" name="submit" value="Send" class="ui-button" onmouseover="validateFields()"  /></td></tr> 
+</table>
+</form>
+
+</div>
+    <footer>
+    <div class="ui-widget-content ui-corner-all" style="text-align: right"><a href="#" id="printco.html">Printing Providers</a> - <a href="#" id="terms.html">T&C</a></div>
+    
+    <div style="text-align: center">Developed By Khulekani Ngongoma</div>
+        </footer>
+ <script src="js/jquery-1.8.3.min.js"></script>
+ 
+ <script src="js/printp.js"></script>
+ <script src="js/order.js"></script>
+ <script src="js/effect.js"></script>
+ <script src="js/logic.js"></script>
+ <script src="js/jquery.ui.core.js"></script>
+ <script src="js/jquery-ui-1.10.0.custom.min.js"></script>
+ <script src="js/webworks-1.0.4.5.js">
+ </script>
+    <script>
+
+        
+
+        $("#menu").menu();
+        $(document).tooltip();
+
+        init();
+
+
+        function getCovered() {
+
+            $.get("php/initHandler.php?q=coveredAreas", function (data) {
+
+                data = JSON.parse(data);
+
+                $.each(data, function (index, value) {
+                    $.each(value, function (index, value) {
+
+
+                        $("#page").append("<li>" + value + "," + index + "</li>");
+
+                    });
+                });
+
+
+            });
+
+
+        }
+
+        function displayOrderHistory() {
+
+
+            $.get("php/initHandler.php?q=orderHistory&userId=" + localStorage['printP_userId'], function (data) {
+
+                data = JSON.parse(data);
+                var i = 1;
+                $.each(data, function (index, value) {
+
+                    $.each(value, function (index, value) {
+                        if (i == 1)
+                            $("#page").append("<table class='ui-corner-all' id='orderHead'><tr><td class='order'>Order ID</td><td class='order'>Phone Number</td><td class='order'>Date</td><td class='order'>Number Of Images</td><td class='order'>Price</td></table>");
+
+                        $("#page").append("<hr />");
+                        i++;
+                        $("#page").append("<table class='ui-corner-all' id='orderContent'><tr><td class='order'>" + value[0] + "</td><td class='order'>" + value[1] + "</td><td class='order'>" + value[2] + "</td><td class='order'>" + value[3] + "</td><td class='order'>R" + value[4] + "</td></table>");
+
+                    });
+                });
+
+
+            });
+
+
+
+
+        }
+
+        localStorage['printP_userId'] == null ? generateUserId() : $("#userId").val(localStorage['printP_userId']);
+
+
+
+
+    </script>
+</body>
+</html>
